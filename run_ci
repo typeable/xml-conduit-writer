@@ -1,0 +1,7 @@
+while true; do
+  clear
+  cabal-dev build && $@
+  inotifywait -qqr -e modify src/ test/ *.cabal
+#  sleep 1
+  clear
+done
