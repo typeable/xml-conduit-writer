@@ -1,5 +1,5 @@
 name:                xml-conduit-writer
-version:             0.1.0.1
+version:             0.1.1.0
 synopsis:            Warm and fuzzy creation of XML documents.
 description:
     “It can scarcely be denied that the supreme goal of

@@ -24,7 +24,7 @@ main :: IO ()
 main = do
     pprint $ document "root" $ do
         element "{ns:uri}pseudo:prefix" $ do
-            element "unprefixed" "empty NS"
+            element "unprefixed" $ comment "empty NS"
             element "pseudo:prefixed" $ comment "wrong!"
 
         element ("sns" !: "{silly:ns:uri}spam") $ do
@@ -41,7 +41,7 @@ main = do
     pprint $ soap () $ do
         element ("v" !: "{vendor:uri}request") $ do
             element "complex" $ do
-                element "key" "value"
+                element "key" $ T.pack "value"
                 elementA "tag" [("key", "value")] empty
             element "text" $ content "some text"
             element "bool" $ toXML True

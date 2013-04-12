@@ -5,11 +5,11 @@
 -- > {-# LANGUAGE OverloadedStrings #-}
 -- >
 -- > let doc = document "root" $ do
--- >     element "hello" "world"
+-- >     element "hello" $ content "world"
 -- >     element "hierarchy" $ do
--- >         element "simple" $ toXML True
--- >         element "as" "it should be"
--- >         toXML $ Just "like this"
+-- >         element "simple" True
+-- >         element "as" ("it should be" :: Text)
+-- >         toXML $ Just . T.pack $ "like this"
 -- >     comment "that's it!"
 --
 
@@ -24,7 +24,7 @@ module Text.XML.Writer
     , node
     , instruction
     , comment
-    , element, elementA
+    , element, elementMaybe, elementA
     , content
     , empty
     , many
@@ -64,17 +64,25 @@ pprint = TL.putStrLn . renderText def { rsPretty = True }
 render :: XML -> [Node]
 render = DL.toList . execWriter
 
--- | Insert one node
+-- | Do nothing.
+empty :: XML
+empty = return ()
+
+-- | Insert one node.
 node :: Node -> XML
 node = tell . DL.singleton
 
 -- | Insert an "Element" node constructed with name and children.
-element :: Name -> XML -> XML
-element name children = node . NodeElement $! Element name def (render children)
+element :: (ToXML a) => Name -> a -> XML
+element name children = node . NodeElement $! Element name def (render $ toXML children)
+
+-- | Insert an "Element" node converted from Maybe value or do nothing.
+elementMaybe :: (ToXML a) => Name -> Maybe a -> XML
+elementMaybe name = maybe empty (element name)
 
 -- | Insert an "Element" node constructed with name, attributes and children.
-elementA :: Name -> [(Name, Text)] -> XML -> XML
-elementA name attrs children = node . NodeElement $! Element name (M.fromList attrs) (render children)
+elementA :: (ToXML a) => Name -> [(Name, Text)] -> a -> XML
+elementA name attrs children = node . NodeElement $! Element name (M.fromList attrs) (render $ toXML children)
 
 -- | Insert an "Instruction" node.
 instruction :: Text -> Text -> XML
@@ -87,10 +95,6 @@ comment = node . NodeComment
 -- | Insert text content node.
 content :: Text -> XML
 content = node . NodeContent
-
--- | Do nothing.
-empty :: XML
-empty = return ()
 
 -- | Mass-convert to nodes.
 -- 
