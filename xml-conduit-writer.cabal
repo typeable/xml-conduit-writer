@@ -34,7 +34,8 @@ library
     xml-conduit, xml-types,
     text,
     mtl, dlist,
-    containers
+    containers,
+    data-default
 
 test-suite tests
   type: exitcode-stdio-1.0
