@@ -1,5 +1,5 @@
 name:                xml-conduit-writer
-version:             0.1.1.0
+version:             0.1.1.2
 synopsis:            Warm and fuzzy creation of XML documents.
 description:
     “It can scarcely be denied that the supreme goal of
@@ -25,7 +25,6 @@ source-repository head
   location: https://bitbucket.org/dpwiz/xml-conduit-writer
 
 library
-  ghc-options: -Wall -O2
   hs-source-dirs: src
   exposed-modules:
     Text.XML.Writer
