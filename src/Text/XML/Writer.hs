@@ -58,6 +58,16 @@ document name children = Document { documentPrologue = Prologue def def def
                                   , documentEpilogue = def
                                   }
 
+-- | Create a simple Document starting with a root element with attributes.
+documentA :: Name           -- ^ Root node name
+          -> [(Name, Text)] -- ^ Attributes
+          -> XML            -- ^ Contents
+          -> Document
+documentA name attrs children = Document { documentPrologue = Prologue def def def
+                                         , documentRoot = Element name (M.fromList attrs) (render children)
+                                         , documentEpilogue = def
+                                         }
+
 -- | Render document using xml-conduit's pretty-printer.
 pprint :: Document -> IO ()
 pprint = TL.putStrLn . renderText def { rsPretty = True }
