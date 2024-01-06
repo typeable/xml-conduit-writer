@@ -36,6 +36,7 @@ module Text.XML.Writer
     ) where
 
 import Text.XML
+import Control.Monad
 import Control.Monad.Writer.Strict
 import Data.Default ()
 import qualified Data.DList as DL
@@ -57,37 +58,6 @@ document name children = Document { documentPrologue = Prologue def def def
                                   , documentRoot = Element name def (render children)
                                   , documentEpilogue = def
                                   }
-
--- | Create a simple Document starting with a root element with attributes.
-documentA :: Name           -- ^ Root node name
-          -> [(Name, Text)] -- ^ Attributes
-          -> XML            -- ^ Contents
-          -> Document
-documentA name attrs children = Document { documentPrologue = Prologue def def def
-                                         , documentRoot = Element name (M.fromList attrs) (render children)
-                                         , documentEpilogue = def
-                                         }
-
--- | Create a simple Document starting with a root element with a doctype.
-documentD :: Name             -- ^ Root node name
-            -> Maybe Doctype  -- ^ DOCTYPE 
-            -> XML            -- ^ Contents
-            -> Document
-documentD name dt children = Document { documentPrologue = Prologue def dt def
-                                      , documentRoot = Element name def (render children)
-                                      , documentEpilogue = def
-                                      }
-
--- | Create a simple Document starting with a root element with attributes and doctype.
-documentAD :: Name            -- ^ Root node name
-            -> [(Name, Text)] -- ^ Attributes
-            -> Maybe Doctype  -- ^ DOCTYPE
-            -> XML            -- ^ Contents
-            -> Document
-documentAD name attrs dt children = Document { documentPrologue = Prologue def dt def
-                                             , documentRoot = Element name (M.fromList attrs) (render children)
-                                             , documentEpilogue = def
-                                             }
 
 -- | Render document using xml-conduit's pretty-printer.
 pprint :: Document -> IO ()
@@ -130,11 +100,11 @@ content :: Text -> XML
 content = node . NodeContent
 
 -- | Mass-convert to nodes.
--- 
+--
 -- > let array = element "container" $ many "wrapper" [1..3]
--- 
+--
 -- Which gives:
--- 
+--
 -- > <container>
 -- >     <wrapper>1</wrapper>
 -- >     <wrapper>2</wrapper>
