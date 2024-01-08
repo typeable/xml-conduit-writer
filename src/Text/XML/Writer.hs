@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, TypeSynonymInstances, FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings, TypeSynonymInstances, FlexibleInstances, CPP #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-} -- IsString for XML
 
 -- | Overcome XML insanity, node by node.
@@ -36,7 +36,6 @@ module Text.XML.Writer
     ) where
 
 import Text.XML
-import Control.Monad
 import Control.Monad.Writer.Strict
 import Data.Default ()
 import qualified Data.DList as DL
@@ -46,6 +45,10 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.Lazy.IO as TL
 import Data.String (IsString(..))
+
+#if MIN_VERSION_mtl(2,3,0)
+import Control.Monad
+#endif
 
 -- | Node container to be rendered as children nodes.
 type XML = Writer (DL.DList Node) ()
